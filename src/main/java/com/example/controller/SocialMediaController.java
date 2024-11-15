@@ -39,7 +39,7 @@ public class SocialMediaController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<?> registerAccountHandler (@RequestBody Account account) {
         Account registeredAccount = accountService.registerAccount(account);
-        return ResponseEntity.status(201).body(registeredAccount);
+        return ResponseEntity.status(200).body(registeredAccount);
     }
 
     @ExceptionHandler(EntityExistsException.class) 
