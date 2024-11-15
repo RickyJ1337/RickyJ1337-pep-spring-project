@@ -16,7 +16,10 @@ public class MessageService {
     private MessageRepository messageRepository;
 
     public Message createNewMessage(Message message) {
+        long postedBy = message.getPostedBy();
         if (message.getMessageText() == "") {throw new IllegalArgumentException("Blank message");}
+        if (message.getMessageText().length() > 255) {throw new IllegalArgumentException("Character length over 255");}
+        if (messageRepository.findMessageByPostedBy(postedBy) == null) {throw new IllegalArgumentException("User does not exist");}
         return messageRepository.save(message);
     }
 

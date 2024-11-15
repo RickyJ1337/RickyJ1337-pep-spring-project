@@ -1,5 +1,6 @@
 package com.example.repository;
 
+import org.hibernate.annotations.Parent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,6 +10,9 @@ import com.example.entity.Message;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    @Query("FROM Message WHERE account_id = :idVar")
-    Message findMessageByID(@Param ("idVar") int account_id);
+    @Query("FROM Message WHERE postedBy = :postedVar")
+    Message findMessageByPostedBy(@Param("postedVar") long posted_by);
+
+    @Query("FROM Message WHERE messageId = :idVar")
+    Message findMessageByID(@Param("idVar") int message_id);
 }
