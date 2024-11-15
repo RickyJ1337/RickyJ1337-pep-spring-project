@@ -1,5 +1,7 @@
 package com.example.controller;
 
+import java.util.List;
+
 import javax.persistence.EntityExistsException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,13 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.function.ServerResponse.Context;
 
 import com.example.entity.Account;
+import com.example.entity.Message;
 import com.example.exception.LoginFailureException;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
@@ -28,18 +30,37 @@ public class SocialMediaController {
 
     @Autowired
     private AccountService accountService;
+    @Autowired
     private MessageService messageService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST) 
-    public ResponseEntity<?> loginAccountHandler (@RequestBody Account account) {
+    public ResponseEntity<?> loginAccountHandler(@RequestBody Account account) {
         Account loggedInAccount = accountService.loginAccount(account);
         return ResponseEntity.status(200).body(loggedInAccount);
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<?> registerAccountHandler (@RequestBody Account account) {
+    public ResponseEntity<?> registerAccountHandler(@RequestBody Account account) {
         Account registeredAccount = accountService.registerAccount(account);
         return ResponseEntity.status(200).body(registeredAccount);
+    }
+
+    @RequestMapping(value = "/messages", method = RequestMethod.POST)
+    public ResponseEntity<?> createMessageHandler(@RequestBody Message message) {
+        Message createdMessage = messageService.createNewMessage(message);
+        return ResponseEntity.status(200).body(createdMessage);
+    }
+
+    @RequestMapping(value = "/messages", method = RequestMethod.GET)
+    public ResponseEntity<?> retrieveAllMessagesHandler() {
+        List<Message> allMessages = messageService.getAllMessages();
+        return ResponseEntity.status(200).body(allMessages);
+    }
+
+    @RequestMapping(value = "/messages/{message_id}", method = RequestMethod.GET)
+    public ResponseEntity<?> retrieveMessageByIDHandler(@PathVariable int message_id) {
+        Message retrievedMessage = messageService.getMessageByID(message_id);
+        return ResponseEntity.status(200).body(retrievedMessage);
     }
 
     @ExceptionHandler(EntityExistsException.class) 
