@@ -21,7 +21,6 @@ public class MessageService {
         if (message.getMessageText() == "") {throw new IllegalArgumentException("Blank message");}
         if (message.getMessageText().length() > 255) {throw new IllegalArgumentException("Character length over 255");}
         boolean userExists = messageRepository.existsById(postedBy);
-        System.out.println(userExists);
         if (userExists == false) {throw new IllegalArgumentException("User does not exist");}
 
         return messageRepository.save(message);
@@ -35,9 +34,9 @@ public class MessageService {
         return messageRepository.findMessageByID(message_id);
     }
 
-    public long deleteMessage(int message_id) {
-        messageRepository.deleteById((long) message_id);
-        return messageRepository.count();
+    public boolean deleteMessage(long message_id) {
+        messageRepository.deleteById(message_id);
+        return true;
     }
 
     //Update message by ID
@@ -55,6 +54,6 @@ public class MessageService {
 
     //Retrieve messages by user
     public List<Message> getMessagesByUser(int account_id) {
-        return messageRepository.findMessageByPostedBy((long) account_id);
+        return messageRepository.findMessageByPostedBy(account_id);
     }
 }

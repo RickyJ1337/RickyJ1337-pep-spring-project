@@ -65,6 +65,8 @@ public class SocialMediaController {
 
     @RequestMapping(value = "/messages/{messageId}", method = RequestMethod.DELETE) 
     public ResponseEntity<?> deleteMessageHandler(@PathVariable int messageId) {
+        boolean isDeleted = messageService.deleteMessage(messageId);
+        if (isDeleted) {return ResponseEntity.status(200).body(1);}
         return ResponseEntity.status(200).body(null);
     }
 
