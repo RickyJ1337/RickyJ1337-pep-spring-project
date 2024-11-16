@@ -16,12 +16,13 @@ public class MessageService {
     private MessageRepository messageRepository;
 
     public Message createNewMessage(Message message) {
-        long postedBy = message.getPostedBy();
+        int postedBy = message.getPostedBy();
 
         if (message.getMessageText() == "") {throw new IllegalArgumentException("Blank message");}
         if (message.getMessageText().length() > 255) {throw new IllegalArgumentException("Character length over 255");}
-        boolean userExists = messageRepository.existsById(postedBy);
-        if (userExists == false) {throw new IllegalArgumentException("User does not exist");}
+        List<Message> messages = messageRepository.findMessageByPostedBy(postedBy);
+        boolean userExists = messageRepository.existsById((long) postedBy);
+        if (messages == null && !userExists) {throw new IllegalArgumentException("User does not exist");}
 
         return messageRepository.save(message);
     }
@@ -34,9 +35,13 @@ public class MessageService {
         return messageRepository.findMessageByID(message_id);
     }
 
-    public boolean deleteMessage(long message_id) {
-        messageRepository.deleteById(message_id);
-        return true;
+    public boolean deleteMessage(int message_id) {
+        Message messageToDelete = messageRepository.findMessageByID(message_id);
+        if (messageToDelete != null) {
+            messageRepository.delete(messageToDelete);
+            return true;
+        }
+        return false;
     }
 
     //Update message by ID
