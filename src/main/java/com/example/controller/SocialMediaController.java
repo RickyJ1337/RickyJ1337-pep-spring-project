@@ -57,10 +57,27 @@ public class SocialMediaController {
         return ResponseEntity.status(200).body(allMessages);
     }
 
-    @RequestMapping(value = "/messages/{message_id}", method = RequestMethod.GET)
-    public ResponseEntity<?> retrieveMessageByIDHandler(@PathVariable int message_id) {
-        Message retrievedMessage = messageService.getMessageByID(message_id);
+    @RequestMapping(value = "/messages/{messageId}", method = RequestMethod.GET)
+    public ResponseEntity<?> retrieveMessageByIDHandler(@PathVariable int messageId) {
+        Message retrievedMessage = messageService.getMessageByID(messageId);
         return ResponseEntity.status(200).body(retrievedMessage);
+    }
+
+    @RequestMapping(value = "/messages/{messageId}", method = RequestMethod.DELETE) 
+    public ResponseEntity<?> deleteMessageHandler(@PathVariable int messageId) {
+        return ResponseEntity.status(200).body(null);
+    }
+
+    @RequestMapping(value = "/messages/{messageId}", method = RequestMethod.PATCH) 
+    public ResponseEntity<?> updateMessageHandler(@PathVariable int messageId, @RequestBody Message message) {
+        int updatedMessageRowNumber = messageService.updateMessage(messageId, message);
+        return ResponseEntity.status(200).body(updatedMessageRowNumber);
+    }
+
+    @RequestMapping(value = "/accounts/{accountId}/messages", method = RequestMethod.GET)
+    public ResponseEntity<?> getMessagesByUser(@PathVariable int accountId) {
+       List<Message> userMessages = messageService.getMessagesByUser(accountId);
+       return ResponseEntity.status(200).body(userMessages);
     }
 
     @ExceptionHandler(EntityExistsException.class) 

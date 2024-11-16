@@ -17,9 +17,13 @@ public class MessageService {
 
     public Message createNewMessage(Message message) {
         long postedBy = message.getPostedBy();
+
         if (message.getMessageText() == "") {throw new IllegalArgumentException("Blank message");}
         if (message.getMessageText().length() > 255) {throw new IllegalArgumentException("Character length over 255");}
-        if (messageRepository.findMessageByPostedBy(postedBy) == null) {throw new IllegalArgumentException("User does not exist");}
+        boolean userExists = messageRepository.existsById(postedBy);
+        System.out.println(userExists);
+        if (userExists == false) {throw new IllegalArgumentException("User does not exist");}
+
         return messageRepository.save(message);
     }
 
@@ -27,9 +31,30 @@ public class MessageService {
         return messageRepository.findAll();
     }
 
-    public Message getMessageByID(int account_id) {
-        return messageRepository.findMessageByID(account_id);
+    public Message getMessageByID(int message_id) {
+        return messageRepository.findMessageByID(message_id);
     }
 
+    public long deleteMessage(int message_id) {
+        messageRepository.deleteById((long) message_id);
+        return messageRepository.count();
+    }
 
+    //Update message by ID
+    public int updateMessage(int message_id, Message message) {
+        Message messageToUpdate = messageRepository.findMessageByID(message_id);
+        String messageText = message.getMessageText();
+        if (messageToUpdate == null) {throw new IllegalArgumentException("Invalid message id");}
+        if (messageText == "") {throw new IllegalArgumentException("Blank message");}
+        if (messageText.length() > 255) {throw new IllegalArgumentException("Character length over 255");}
+
+        messageToUpdate.setMessageText(messageText);
+        messageRepository.save(messageToUpdate);
+        return 1;
+    }
+
+    //Retrieve messages by user
+    public List<Message> getMessagesByUser(int account_id) {
+        return messageRepository.findMessageByPostedBy((long) account_id);
+    }
 }
