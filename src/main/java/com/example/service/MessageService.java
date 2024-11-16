@@ -21,8 +21,7 @@ public class MessageService {
         if (message.getMessageText() == "") {throw new IllegalArgumentException("Blank message");}
         if (message.getMessageText().length() > 255) {throw new IllegalArgumentException("Character length over 255");}
         List<Message> messages = messageRepository.findMessageByPostedBy(postedBy);
-        boolean userExists = messageRepository.existsById((long) postedBy);
-        if (messages == null && !userExists) {throw new IllegalArgumentException("User does not exist");}
+        if (messages.isEmpty()) {throw new IllegalArgumentException("User does not exist");}
 
         return messageRepository.save(message);
     }
